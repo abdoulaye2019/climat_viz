@@ -1,8 +1,5 @@
-library(dplyr)
-library(tibble)
-library(tidyr)
+library(tidyverse)
 library(lubridate)
-library(ggplot2)
 
 read.csv('data/GLB.Ts+dSST.csv', skip = 1, na = "***") %>% 
   select(year = Year, t_diff = 'J.D') %>% 
