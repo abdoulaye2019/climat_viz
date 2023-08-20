@@ -1,25 +1,23 @@
-library(tidyverse)
+library("tidyverse")
 
-t_diff2022
-
-t_diff <- read.csv("data/GLB.Ts+dSST.csv", skip = 1, na = "***") %>% 
-  select(year = Year, month.abb) %>% 
-  pivot_longer(-year, names_to = "month", values_to = "t_diff") %>% 
+t_diff2022 <- read.csv("data/GLB.Ts+dSST.csv", skip = 1, na = "***") %>% 
+  select(year = Year, month.abb) %>%
+  filter(year != "2023") %>% 
+  pivot_longer(-year, names_to = "month", values_to = "t_diff2022") %>%
+  filter(!(year == 2022 & month %in% c("Aug", "Sep", "Oct", "Nov", "Dec"))) %>%
   drop_na()
 
-
-t_diff2022 <-t_diff %>% filter(year != "2023")
-last_dec <- t_diff %>% 
+last_dec <- t_diff2022 %>% 
   filter(month == "Dec") %>% 
   mutate(year = year + 1,
          month = "last_Dec")
 
-next_jan <- t_diff %>% 
+next_jan <- t_diff2022 %>% 
   filter(month == 'Jan') %>% 
   mutate(year = year - 1,
          month = "next_Jan")
 
-t_data <- bind_rows(last_dec, t_diff, next_jan) %>% 
+t_data <- bind_rows(last_dec, t_diff2022, next_jan) %>% 
   mutate(month = factor(month, levels = c("last_Dec", month.abb, "next_Jan")),
          month_number = as.numeric(month) - 1,
          this_year = year == 2022)
@@ -29,12 +27,12 @@ annotation <- t_data %>%
   slice_max(month_number)
 
 t_data %>% 
-  ggplot(aes(x = month_number, y = t_diff, group = year,
+  ggplot(aes(x = month_number, y = t_diff2022, group = year,
              color = year, size = this_year)) +
   geom_hline(yintercept = 0, color = "white") +
   geom_line() +
   geom_text(data = annotation,
-            aes(x = month_number, y = t_diff, label = year, color = year),
+            aes(x = month_number, y = t_diff2022, label = year, color = year),
             inherit.aes = FALSE,
             hjust = 0, size = 5, nudge_x = 0.15, fontface = "bold") +
   scale_x_continuous(breaks = 1:12,
@@ -66,5 +64,3 @@ t_data %>%
     legend.key.height = unit(55, "pt")
     
   )
-
-ggsave("figures/temperature_lines.png", width = 8, height = 4.5)
