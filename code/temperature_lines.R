@@ -64,4 +64,4 @@ t_data %>%
     
   )
 
-ggsave("figures/temperature_lines_2023.png", width = 8, height = 4.5)
+ggsave("figures/temperature_lines_23.png", width = 8, height = 4.5)

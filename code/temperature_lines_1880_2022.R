@@ -64,3 +64,6 @@ t_data %>%
     legend.key.height = unit(55, "pt")
     
   )
+
+
+ggsave("figures/temperature_lines22.png", width = 8, height = 4.5)
