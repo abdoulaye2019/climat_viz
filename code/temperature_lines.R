@@ -1,14 +1,11 @@
 library(tidyverse)
 
-t_diff2022
 
 t_diff <- read.csv("data/GLB.Ts+dSST.csv", skip = 1, na = "***") %>% 
   select(year = Year, month.abb) %>% 
   pivot_longer(-year, names_to = "month", values_to = "t_diff") %>% 
   drop_na()
 
-
-t_diff2022 <-t_diff %>% filter(year != "2023")
 last_dec <- t_diff %>% 
   filter(month == "Dec") %>% 
   mutate(year = year + 1,
@@ -22,7 +19,7 @@ next_jan <- t_diff %>%
 t_data <- bind_rows(last_dec, t_diff, next_jan) %>% 
   mutate(month = factor(month, levels = c("last_Dec", month.abb, "next_Jan")),
          month_number = as.numeric(month) - 1,
-         this_year = year == 2022)
+         this_year = year == 2023)
 
 annotation <- t_data %>% 
   slice_max(year) %>% 
@@ -67,4 +64,4 @@ t_data %>%
     
   )
 
-ggsave("figures/temperature_lines.png", width = 8, height = 4.5)
+ggsave("figures/temperature_lines_2023.png", width = 8, height = 4.5)
